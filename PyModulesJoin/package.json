@@ -1,0 +1,9 @@
+{
+  "name": "py-modules-join",
+  "version": "0.0.0",
+  "description": "PyModulesJoin",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  }
+}
