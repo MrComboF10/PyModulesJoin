@@ -1,0 +1,70 @@
+﻿* {
+    font-family: Arial;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#left-block {
+    position: relative;
+    display: block;
+    float: left;
+    height: 100%;
+    width: 20%;
+    border: 1px solid black;
+}
+
+#file-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid red;
+}
+
+#file-list li {
+    width: 100%;
+    border: 1px solid pink;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#left-bottom-block {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+#file-handler {
+    border: 1px solid black;
+}
+
+#create-module {
+    border: 1px solid black;
+}
+
+#right-block {
+    position: relative;
+    display: block;
+    float: left;
+    height: 100%;
+    width: 80%;
+    border: 1px solid green;
+}
+
+.checkbox {
+    border: 1px solid black;
+    background-color: white;
+    width: 20px;
+    height: 20px;
+}
+
+/*#options-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}*/
