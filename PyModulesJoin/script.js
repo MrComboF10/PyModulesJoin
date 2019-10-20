@@ -1,6 +1,4 @@
-﻿// commit test 2
-
-const fs = require("fs");
+﻿const fs = require("fs");
 
 var leftBlock = document.getElementById("left-block");
 var fileList = document.getElementById("file-list");

@@ -1,0 +1,3 @@
+﻿script.js:
+
+remove python object lists -> create function
