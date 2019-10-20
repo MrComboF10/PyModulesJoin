@@ -350,12 +350,20 @@ fileList.addEventListener("drop", function (e) {
 deleteFile.addEventListener("click", function () {
     for (var liIndex = 0; liIndex < fileList.childNodes.length; liIndex++) {
         if (fileList.childNodes[liIndex].isSelected) {
+
+            // remove all python objects lists
             removePythonObjectsFileList(fileList.childNodes[liIndex].fileName);
 
             // remove li from filelist
             fileList.removeChild(fileList.childNodes[liIndex]);
         }
     }
+});
+
+newFile.addEventListener("click", function () {
+
+    
+
 });
 
 setFileListHeight();

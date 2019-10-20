@@ -1,3 +1,13 @@
 ﻿script.js:
 
-remove python object lists -> create function
+Drop files in aplphabetic order
+
+change background color of files when selected
+
+add feature of select multiples files
+
+show content only of the last selected file when multiples files are selected
+
+when remove multiples files, select the next file which was not removed
+
+if the next file dont existe remove the file 
