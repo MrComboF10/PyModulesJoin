@@ -1,7 +1,5 @@
 ﻿script.js:
 
-Drop files in aplphabetic order
-
 change background color of files when selected
 
 add feature of select multiples files

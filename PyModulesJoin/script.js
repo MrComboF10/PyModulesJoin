@@ -1,4 +1,6 @@
 ﻿const fs = require("fs");
+const child_process = require("child_process");
+const os = require("os");
 
 var leftBlock = document.getElementById("left-block");
 var fileList = document.getElementById("file-list");
@@ -361,7 +363,7 @@ deleteFile.addEventListener("click", function () {
 });
 
 newFile.addEventListener("click", function () {
-
+    child_process.exec("start " + os.homedir());
     
 
 });
