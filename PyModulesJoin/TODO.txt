@@ -9,3 +9,8 @@ show content only of the last selected file when multiples files are selected
 when remove multiples files, select the next file which was not removed
 
 if the next file dont existe remove the file 
+
+==========
+Done:
+
+open file explorer in user directory when user click new button
