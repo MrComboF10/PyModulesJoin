@@ -1,6 +1,7 @@
 ﻿const fs = require("fs");
-const child_process = require("child_process");
-const os = require("os");
+const nodejspath = require("path");
+
+const { dialog } = require("electron").remote;
 
 var leftBlock = document.getElementById("left-block");
 var fileList = document.getElementById("file-list");
@@ -81,6 +82,7 @@ class LeaningLeftContent {
         this._createImportsList();
     }
 
+    // find leanigleft lines index
     _findLinesIndex() {
         for (var i = 0; i < this._lines.length; i++) {
             if (this._lines[i][0] != " " && this._lines[i][0] != "#" && this._lines[i] != "") {
@@ -278,6 +280,22 @@ function createLiNodeFileList(fileName, leaningLeftContent) {
     return liNodeFileList;
 }
 
+function processFileData(file_name, data) {
+    leaningLeftContent = new LeaningLeftContent(data);
+
+    var liNodeFileList = createLiNodeFileList(file_name, leaningLeftContent);
+    fileList.appendChild(liNodeFileList);
+
+    var divNodeClassesList = createPythonObjectList("classes-" + file_name, leaningLeftContent.classes);
+    classesList.appendChild(divNodeClassesList);
+
+    var divNodeFunctionsList = createPythonObjectList("functions-" + file_name, leaningLeftContent.functions);
+    functionsList.appendChild(divNodeFunctionsList);
+
+    var divNodeImportsList = createPythonObjectList("imports-" + file_name, leaningLeftContent.imports);
+    importsList.appendChild(divNodeImportsList);
+}
+
 // hide or show fileName classes, functions and imports
 function styleDisplayPythonObjectsLists(fileName, styleDisplay) {
     var pythonObjectClassesList = document.getElementById("classes-" + fileName);
@@ -329,28 +347,15 @@ fileList.addEventListener("dragleave", function (e) {
 fileList.addEventListener("drop", function (e) {
     e.preventDefault();
 
-    for (var file of e.dataTransfer.files) {
+    for (let file of e.dataTransfer.files) {
 
-        var data = fs.readFileSync(file.path, "utf8");
-
-        leaningLeftContent = new LeaningLeftContent(data);
-
-        var liNodeFileList = createLiNodeFileList(file.name, leaningLeftContent);
-        fileList.appendChild(liNodeFileList);
-
-        var divNodeClassesList = createPythonObjectList("classes-" + file.name, leaningLeftContent.classes);
-        classesList.appendChild(divNodeClassesList);
-
-        var divNodeFunctionsList = createPythonObjectList("functions-" + file.name, leaningLeftContent.functions);
-        functionsList.appendChild(divNodeFunctionsList);
-
-        var divNodeImportsList = createPythonObjectList("imports-" + file.name, leaningLeftContent.imports);
-        importsList.appendChild(divNodeImportsList);
+        let data = fs.readFileSync(file.path, "utf8");
+        processFileData(file.name, data);
     }
 });
 
 deleteFile.addEventListener("click", function () {
-    for (var liIndex = 0; liIndex < fileList.childNodes.length; liIndex++) {
+    for (let liIndex = 0; liIndex < fileList.childNodes.length; liIndex++) {
         if (fileList.childNodes[liIndex].isSelected) {
 
             // remove all python objects lists
@@ -362,10 +367,19 @@ deleteFile.addEventListener("click", function () {
     }
 });
 
+// open file explorer to select files
 newFile.addEventListener("click", function () {
-    child_process.exec("start " + os.homedir());
-    
 
+    var files_path = dialog.showOpenDialogSync({
+        properties: ["openFile", "multiSelections"]
+    });
+
+    for (let path of files_path) {
+
+        let file_data = fs.readFileSync(path, "utf8");
+        let file_name = nodejspath.basename(path);
+        processFileData(file_name, file_data)
+    }    
 });
 
 setFileListHeight();
