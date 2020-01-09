@@ -1,7 +1,7 @@
 ﻿const fs = require("fs");
 const nodejspath = require("path");
-
 const { dialog } = require("electron").remote;
+const { ipcRenderer } = require("electron");
 
 var leftBlock = document.getElementById("left-block");
 var fileList = document.getElementById("file-list");
@@ -281,6 +281,35 @@ function createLiNodeFileList(fileName, leaningLeftContent) {
 }
 
 function processFileData(file_name, data) {
+
+    // verify if file name already exists
+    for (let f of fileList.childNodes) {
+
+        if (f.textContent == file_name) {
+            let button_index = dialog.showMessageBoxSync({
+                type: "warning",
+                buttons: ["Yes", "No"],
+                defaultId: 0,
+                title: "File already exists!",
+                message: "Do you want to replace it?"
+            });
+
+            if (button_index == 0) {
+
+                console.log("File replaced!");
+
+                // remove previous python object lists
+                removePythonObjectsFileList(file_name);
+
+                // remove li from filelist
+                fileList.removeChild(f);
+
+            }
+
+            else return;
+        }
+    }
+
     leaningLeftContent = new LeaningLeftContent(data);
 
     var liNodeFileList = createLiNodeFileList(file_name, leaningLeftContent);
@@ -378,7 +407,7 @@ newFile.addEventListener("click", function () {
 
         let file_data = fs.readFileSync(path, "utf8");
         let file_name = nodejspath.basename(path);
-        processFileData(file_name, file_data)
+        processFileData(file_name, file_data);
     }    
 });
 
