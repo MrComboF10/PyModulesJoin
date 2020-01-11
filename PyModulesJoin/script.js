@@ -1,7 +1,9 @@
-﻿const fs = require("fs");
+﻿'use strict';
+
+const fs = require("fs");
 const nodejspath = require("path");
 const { dialog } = require("electron").remote;
-const { ipcRenderer } = require("electron");
+//const configs = require("./config.js");
 
 var leftBlock = document.getElementById("left-block");
 var fileList = document.getElementById("file-list");
@@ -13,6 +15,8 @@ var importsList = document.getElementById("imports-list");
 
 var deleteFile = document.getElementById("delete-file");
 var newFile = document.getElementById("new-file");
+
+var dragElement;
 
 
 class PythonObject {
@@ -173,8 +177,8 @@ class LeaningLeftContent {
 
 // set high of fileList in functions of left block height
 function setFileListHeight() {
-    leftBlockHeight = leftBlock.offsetHeight;
-    leftBottomBlockHeight = leftBottomBlock.offsetHeight;
+    var leftBlockHeight = leftBlock.offsetHeight;
+    var leftBottomBlockHeight = leftBottomBlock.offsetHeight;
     fileList.style.height = (leftBlockHeight - leftBottomBlockHeight).toString() + "px";
 }
 
@@ -221,7 +225,7 @@ function createPythonObjectLi(pythonObject) {
     divNodeObject.appendChild(divNodeObjectName);
     divNodeObject.appendChild(divNodeObjectCheckBox);
 
-    return divNodeObject
+    return divNodeObject;
 }
 
 // create class, function or import list for specific file (ex: id="classes"+fileName)
@@ -248,6 +252,8 @@ function createLiNodeFileList(fileName, leaningLeftContent) {
     var liNodeFileList = document.createElement("li");
     liNodeFileList.appendChild(filenameTextNode);
 
+    liNodeFileList.setAttribute("draggable", "true");
+
     // store leaningLeftContent
     liNodeFileList.leaningLeftContent = leaningLeftContent;
 
@@ -265,8 +271,11 @@ function createLiNodeFileList(fileName, leaningLeftContent) {
                 let fileName = li.fileName;
                 hidePythonObjectsLists(fileName);
                 li.isSelected = false;
+                li.style.backgroundColor = "aqua";
             }
         }
+
+        // add liNodeFileList propertie to verify if element is selected
         this.isSelected = true;
 
         var fileName = this.fileName;
@@ -275,6 +284,30 @@ function createLiNodeFileList(fileName, leaningLeftContent) {
         showPythonObjectsLists(fileName);
 
         this.isSelected = true;
+        this.style.backgroundColor = "yellow";
+    });
+
+    liNodeFileList.addEventListener("dragstart", function (e) {
+        dragElement = this;
+    });
+
+    liNodeFileList.addEventListener("dragover", function (e) {
+        e.preventDefault();
+    });
+
+    liNodeFileList.addEventListener("drop", function (e) {
+        e.stopPropagation();
+
+        for (let file of e.dataTransfer.files) {
+
+            let data = fs.readFileSync(file.path, "utf8");
+            processFileData(file.name, data);
+        }
+
+        if (this != dragElement && e.dataTransfer.items.length == 0) {
+            this.parentElement.removeChild(dragElement);
+            this.parentElement.insertBefore(dragElement, this);
+        }
     });
 
     return liNodeFileList;
@@ -296,21 +329,17 @@ function processFileData(file_name, data) {
 
             if (button_index == 0) {
 
-                console.log("File replaced!");
-
                 // remove previous python object lists
                 removePythonObjectsFileList(file_name);
 
                 // remove li from filelist
                 fileList.removeChild(f);
-
             }
-
             else return;
         }
     }
 
-    leaningLeftContent = new LeaningLeftContent(data);
+    var leaningLeftContent = new LeaningLeftContent(data);
 
     var liNodeFileList = createLiNodeFileList(file_name, leaningLeftContent);
     fileList.appendChild(liNodeFileList);
@@ -360,7 +389,7 @@ function removePythonObjectsFileList(fileName) {
 
     // remove all imports of fileName from importsList
     var pythonObjectImportsFile = document.getElementById("imports-" + fileName);
-    importsList.removeChild(pythonObjectImportsFile)
+    importsList.removeChild(pythonObjectImportsFile);
 }
 
 window.addEventListener("resize", function () { setFileListHeight() });
@@ -380,6 +409,11 @@ fileList.addEventListener("drop", function (e) {
 
         let data = fs.readFileSync(file.path, "utf8");
         processFileData(file.name, data);
+    }
+
+    if (e.dataTransfer.items.length == 0) {
+        this.removeChild(dragElement);
+        this.appendChild(dragElement);
     }
 });
 
@@ -408,9 +442,7 @@ newFile.addEventListener("click", function () {
         let file_data = fs.readFileSync(path, "utf8");
         let file_name = nodejspath.basename(path);
         processFileData(file_name, file_data);
-    }    
+    }
 });
 
 setFileListHeight();
-
-// remove python object lists -> create function

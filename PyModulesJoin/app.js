@@ -2,7 +2,7 @@
 
 const electron = require("electron");
 
-const { app, BrowserWindow, ipcMain } = electron;
+const { app, BrowserWindow } = electron;
 
 var win;
 
