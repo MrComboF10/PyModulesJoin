@@ -15,6 +15,7 @@ var importsList = document.getElementById("imports-list");
 
 var deleteFile = document.getElementById("delete-file");
 var newFile = document.getElementById("new-file");
+var createModule = document.getElementById("create-module");
 
 var dragElement;
 
@@ -225,6 +226,8 @@ function createPythonObjectLi(pythonObject) {
     divNodeObject.appendChild(divNodeObjectName);
     divNodeObject.appendChild(divNodeObjectCheckBox);
 
+    divNodeObject.content = pythonObject.content;
+
     return divNodeObject;
 }
 
@@ -392,6 +395,19 @@ function removePythonObjectsFileList(fileName) {
     importsList.removeChild(pythonObjectImportsFile);
 }
 
+function getPythonObjectStringContent(pythonObjectsId) {
+    let content = "";
+    let pythonObjects = document.getElementById(pythonObjectsId);
+    for (let pyobj of pythonObjects.childNodes) {
+        for (let childsObj of pyobj.childNodes) {
+            if (childsObj.className == "checkbox") {
+                if (childsObj.isSelected) content += pyobj.content;
+            }
+        }
+    }
+    return content;
+}
+
 window.addEventListener("resize", function () { setFileListHeight() });
 
 fileList.addEventListener("dragover", function (e) {
@@ -443,6 +459,35 @@ newFile.addEventListener("click", function () {
         let file_name = nodejspath.basename(path);
         processFileData(file_name, file_data);
     }
+});
+
+createModule.addEventListener("click", function () {
+
+    //let content = "Test creating file!";
+
+    var directory_path = dialog.showSaveDialogSync({
+        filters: [{ name: "Python File", extensions: ["py"]}]
+    });
+
+    if (directory_path !== undefined) {
+
+        let importsContent = "";
+        let functionsContent = "";
+        let classesContent = "";
+        let finalContent;
+
+        for (let li of fileList.childNodes) {
+            classesContent += getPythonObjectStringContent("classes-" + li.fileName);
+            functionsContent += getPythonObjectStringContent("functions-" + li.fileName);
+            importsContent += getPythonObjectStringContent("imports-" + li.fileName);
+        }
+
+        finalContent = importsContent + functionsContent + classesContent;
+
+        fs.writeFileSync(directory_path, finalContent);
+
+    }
+
 });
 
 setFileListHeight();
