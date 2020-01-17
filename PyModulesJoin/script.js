@@ -9,9 +9,17 @@ var leftBlock = document.getElementById("left-block");
 var fileList = document.getElementById("file-list");
 var leftBottomBlock = document.getElementById("left-bottom-block");
 
+var classesHeader = document.getElementById("classes-header");
+var functionsHeader = document.getElementById("functions-header");
+var importsHeader = document.getElementById("imports-header");
+
 var classesList = document.getElementById("classes-list");
 var functionsList = document.getElementById("functions-list");
 var importsList = document.getElementById("imports-list");
+
+var classesCheckBoxList = document.getElementById("classes-checkbox-list");
+var functionsCheckBoxList = document.getElementById("functions-checkbox-list");
+var importsCheckBoxList = document.getElementById("imports-checkbox-list");
 
 var deleteFile = document.getElementById("delete-file");
 var newFile = document.getElementById("new-file");
@@ -183,8 +191,8 @@ function setFileListHeight() {
     fileList.style.height = (leftBlockHeight - leftBottomBlockHeight).toString() + "px";
 }
 
-// create checkbox to use in pythonObjectLis
-function createCheckBox() {
+// create checkbox to use in pythonObjectList
+function createPythonObjectLiCheckBox() {
 
     // create checkbox
     var divNodeCheckBox = document.createElement("div");
@@ -210,6 +218,63 @@ function createCheckBox() {
     return divNodeCheckBox;
 }
 
+function createPythonObjectHeaderCheckBox(checkBoxId) {
+    // create checkbox
+    var divNodeCheckBox = document.createElement("div");
+    divNodeCheckBox.classList.add("checkbox");
+    divNodeCheckBox.setAttribute("id", checkBoxId);
+    divNodeCheckBox.isSelected = false;
+
+    // add click event
+    divNodeCheckBox.addEventListener("click", function () {
+
+        // uncheck checkbox
+        if (this.isSelected) {
+            this.style.backgroundColor = "white";
+            this.isSelected = false;
+        }
+
+        // check checkbox
+        else {
+            this.style.backgroundColor = "black";
+            this.isSelected = true;
+
+            // check all python objects li check boxes
+            if (this.parentNode.id == "classes-header") {
+                for (let div of classesList.childNodes) {
+                    console.log(div);
+                }
+            }
+
+            else if (this.parentNode.id == "functions-header") {
+                for (let div of functionsList.childNodes) {
+                    console.log(div);
+                }
+            }
+
+            else if (this.parentNode.id == "imports-header") {
+                for (let div of importsList.childNodes) {
+                    console.log(div);
+                }
+            }
+        }
+    });
+
+    return divNodeCheckBox;
+}
+
+// add checkbox to PythonObjectsList
+
+/*function addCheckBoxPythonObjects() {
+    var classCheckBox = createPythonObjectHeaderCheckBox();
+    var functionCheckBox = createPythonObjectHeaderCheckBox();
+    var importCheckBox = createPythonObjectHeaderCheckBox();
+
+    classesHeader.appendChild(classCheckBox);
+    functionsHeader.appendChild(functionCheckBox);
+    importsHeader.appendChild(importCheckBox);
+}*/
+
 // create pythonObjectLi for each object find in file
 function createPythonObjectLi(pythonObject) {
     var textNodeObjectName = document.createTextNode(pythonObject.name);
@@ -219,7 +284,7 @@ function createPythonObjectLi(pythonObject) {
     divNodeObjectName.appendChild(textNodeObjectName);
 
     // create checkbox
-    var divNodeObjectCheckBox = createCheckBox();
+    var divNodeObjectCheckBox = createPythonObjectLiCheckBox();
 
     // create pythonObjectLi
     var divNodeObject = document.createElement("div");
@@ -231,7 +296,7 @@ function createPythonObjectLi(pythonObject) {
     return divNodeObject;
 }
 
-// create class, function or import list for specific file (ex: id="classes"+fileName)
+// create class, function or import list for specific file (ex: id="classes-"+fileName)
 function createPythonObjectList(pythonObjectId, pythonObjectList) {
 
     // create pythonObjectList
@@ -248,6 +313,8 @@ function createPythonObjectList(pythonObjectId, pythonObjectList) {
 
     return divNodeObjectsList;
 }
+
+// create class function or import checkbuttons list for specific file (ex: id="")
 
 // create new li in fileList with name fileName
 function createLiNodeFileList(fileName, leaningLeftContent) {
@@ -316,12 +383,12 @@ function createLiNodeFileList(fileName, leaningLeftContent) {
     return liNodeFileList;
 }
 
-function processFileData(file_name, data) {
+function processFileData(fileName, data) {
 
     // verify if file name already exists
     for (let f of fileList.childNodes) {
 
-        if (f.textContent == file_name) {
+        if (f.textContent == fileName) {
             let button_index = dialog.showMessageBoxSync({
                 type: "warning",
                 buttons: ["Yes", "No"],
@@ -333,7 +400,7 @@ function processFileData(file_name, data) {
             if (button_index == 0) {
 
                 // remove previous python object lists
-                removePythonObjectsFileList(file_name);
+                removePythonObjectsFileList(fileName);
 
                 // remove li from filelist
                 fileList.removeChild(f);
@@ -344,17 +411,31 @@ function processFileData(file_name, data) {
 
     var leaningLeftContent = new LeaningLeftContent(data);
 
-    var liNodeFileList = createLiNodeFileList(file_name, leaningLeftContent);
+    var liNodeFileList = createLiNodeFileList(fileName, leaningLeftContent);
     fileList.appendChild(liNodeFileList);
 
-    var divNodeClassesList = createPythonObjectList("classes-" + file_name, leaningLeftContent.classes);
+    var divNodeClassesList = createPythonObjectList("classes-" + fileName, leaningLeftContent.classes);
     classesList.appendChild(divNodeClassesList);
 
-    var divNodeFunctionsList = createPythonObjectList("functions-" + file_name, leaningLeftContent.functions);
+    var divNodeFunctionsList = createPythonObjectList("functions-" + fileName, leaningLeftContent.functions);
     functionsList.appendChild(divNodeFunctionsList);
 
-    var divNodeImportsList = createPythonObjectList("imports-" + file_name, leaningLeftContent.imports);
+    var divNodeImportsList = createPythonObjectList("imports-" + fileName, leaningLeftContent.imports);
     importsList.appendChild(divNodeImportsList);
+
+
+
+    var divNodeClassCheckBox = createPythonObjectHeaderCheckBox("classes-checkbox-" + fileName);
+    divNodeClassCheckBox.style.display = "none";
+    classesCheckBoxList.appendChild(divNodeClassCheckBox);
+
+    var divNodeFunctionCheckBox = createPythonObjectHeaderCheckBox("functions-checkbox-" + fileName);
+    divNodeFunctionCheckBox.style.display = "none";
+    functionsCheckBoxList.appendChild(divNodeFunctionCheckBox);
+
+    var divNodeImportCheckBox = createPythonObjectHeaderCheckBox("imports-checkbox-" + fileName);
+    divNodeImportCheckBox.style.display = "none";
+    importsCheckBoxList.appendChild(divNodeImportCheckBox);
 }
 
 // hide or show fileName classes, functions and imports
@@ -367,6 +448,15 @@ function styleDisplayPythonObjectsLists(fileName, styleDisplay) {
 
     var pythonObjectImportsList = document.getElementById("imports-" + fileName);
     pythonObjectImportsList.style.display = styleDisplay;
+
+    var pythonObjectClassesCheckBoxList = document.getElementById("classes-checkbox-" + fileName);
+    pythonObjectClassesCheckBoxList.style.display = styleDisplay;
+
+    var pythonObjectFunctionsCheckBoxList = document.getElementById("functions-checkbox-" + fileName);
+    pythonObjectFunctionsCheckBoxList.style.display = styleDisplay;
+
+    var pythonObjectImportCheckBoxList = document.getElementById("imports-checkbox-" + fileName);
+    pythonObjectImportCheckBoxList.style.display = styleDisplay;
 }
 
 // hide all fileName classes, functions and imports
@@ -393,6 +483,18 @@ function removePythonObjectsFileList(fileName) {
     // remove all imports of fileName from importsList
     var pythonObjectImportsFile = document.getElementById("imports-" + fileName);
     importsList.removeChild(pythonObjectImportsFile);
+
+    // remove classes checkbox of fileName
+    var pythonObjectClassesCheckBox = document.getElementById("classes-checkbox-" + fileName);
+    classesCheckBoxList.removeChild(pythonObjectClassesCheckBox);
+
+    // remove functions checkbox of fileName
+    var pythonObjectFunctionsCheckBox = document.getElementById("functions-checkbox-" + fileName);
+    functionsCheckBoxList.removeChild(pythonObjectFunctionsCheckBox);
+
+    // remove imports checkbox of fileName
+    var pythonObjectImportsCheckBox = document.getElementById("imports-checkbox-" + fileName);
+    importsCheckBoxList.removeChild(pythonObjectImportsCheckBox);
 }
 
 function getPythonObjectStringContent(pythonObjectsId) {

@@ -8,7 +8,6 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    /*border: 1px solid black;*/
 }
 
 #left-block {
@@ -17,7 +16,6 @@ html, body {
     float: left;
     height: 100%;
     width: 20%;
-    /*border-right: 1px solid black;*/
 }
 
 #file-list {
@@ -25,12 +23,10 @@ html, body {
     margin: 0;
     padding: 0;
     border-top: 1px solid black;
-    /*border-left: 1px solid black;*/
 }
 
 #file-list li {
     width: 100%;
-    /*border: 1px solid black;*/
     overflow: hidden;
     text-overflow: ellipsis;
     background-color: aqua;
@@ -80,8 +76,32 @@ html, body {
     height: 20px;
 }
 
-/*#options-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}*/
+#classes-header div {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+#functions-header div {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+#imports-header div {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+#classes-list div div div {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+#functions-list div div div {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+#imports-list div div div {
+    display: inline-block;
+    margin-right: 20px;
+}
