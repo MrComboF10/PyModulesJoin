@@ -218,11 +218,14 @@ function createPythonObjectLiCheckBox() {
     return divNodeCheckBox;
 }
 
-function createPythonObjectHeaderCheckBox(checkBoxId) {
+function createPythonObjectHeaderCheckBox(pythonObjectsName, fileName) {
+
+    var currentPythonObjectList = document.getElementById(pythonObjectsName + "-" + fileName);
+
     // create checkbox
     var divNodeCheckBox = document.createElement("div");
     divNodeCheckBox.classList.add("checkbox");
-    divNodeCheckBox.setAttribute("id", checkBoxId);
+    divNodeCheckBox.setAttribute("id", pythonObjectsName + "-checkbox-" + fileName);
     divNodeCheckBox.isSelected = false;
 
     // add click event
@@ -232,6 +235,11 @@ function createPythonObjectHeaderCheckBox(checkBoxId) {
         if (this.isSelected) {
             this.style.backgroundColor = "white";
             this.isSelected = false;
+
+            for (let checkbox of currentPythonObjectList.getElementsByClassName("checkbox")) {
+                checkbox.isSelected = false;
+                checkbox.style.backgroundColor = "white";
+            }
         }
 
         // check checkbox
@@ -239,41 +247,15 @@ function createPythonObjectHeaderCheckBox(checkBoxId) {
             this.style.backgroundColor = "black";
             this.isSelected = true;
 
-            // check all python objects li check boxes
-            if (this.parentNode.id == "classes-header") {
-                for (let div of classesList.childNodes) {
-                    console.log(div);
-                }
-            }
-
-            else if (this.parentNode.id == "functions-header") {
-                for (let div of functionsList.childNodes) {
-                    console.log(div);
-                }
-            }
-
-            else if (this.parentNode.id == "imports-header") {
-                for (let div of importsList.childNodes) {
-                    console.log(div);
-                }
+            for (let checkbox of currentPythonObjectList.getElementsByClassName("checkbox")) {
+                checkbox.isSelected = true;
+                checkbox.style.backgroundColor = "black";
             }
         }
     });
 
     return divNodeCheckBox;
 }
-
-// add checkbox to PythonObjectsList
-
-/*function addCheckBoxPythonObjects() {
-    var classCheckBox = createPythonObjectHeaderCheckBox();
-    var functionCheckBox = createPythonObjectHeaderCheckBox();
-    var importCheckBox = createPythonObjectHeaderCheckBox();
-
-    classesHeader.appendChild(classCheckBox);
-    functionsHeader.appendChild(functionCheckBox);
-    importsHeader.appendChild(importCheckBox);
-}*/
 
 // create pythonObjectLi for each object find in file
 function createPythonObjectLi(pythonObject) {
@@ -313,8 +295,6 @@ function createPythonObjectList(pythonObjectId, pythonObjectList) {
 
     return divNodeObjectsList;
 }
-
-// create class function or import checkbuttons list for specific file (ex: id="")
 
 // create new li in fileList with name fileName
 function createLiNodeFileList(fileName, leaningLeftContent) {
@@ -425,15 +405,15 @@ function processFileData(fileName, data) {
 
 
 
-    var divNodeClassCheckBox = createPythonObjectHeaderCheckBox("classes-checkbox-" + fileName);
+    var divNodeClassCheckBox = createPythonObjectHeaderCheckBox("classes", fileName);
     divNodeClassCheckBox.style.display = "none";
     classesCheckBoxList.appendChild(divNodeClassCheckBox);
 
-    var divNodeFunctionCheckBox = createPythonObjectHeaderCheckBox("functions-checkbox-" + fileName);
+    var divNodeFunctionCheckBox = createPythonObjectHeaderCheckBox("functions", fileName);
     divNodeFunctionCheckBox.style.display = "none";
     functionsCheckBoxList.appendChild(divNodeFunctionCheckBox);
 
-    var divNodeImportCheckBox = createPythonObjectHeaderCheckBox("imports-checkbox-" + fileName);
+    var divNodeImportCheckBox = createPythonObjectHeaderCheckBox("imports", fileName);
     divNodeImportCheckBox.style.display = "none";
     importsCheckBoxList.appendChild(divNodeImportCheckBox);
 }
@@ -585,9 +565,7 @@ createModule.addEventListener("click", function () {
         finalContent = importsContent + functionsContent + classesContent;
 
         fs.writeFileSync(directory_path, finalContent);
-
     }
-
 });
 
 setFileListHeight();
