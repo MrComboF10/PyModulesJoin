@@ -3,15 +3,10 @@
 const fs = require("fs");
 const nodejspath = require("path");
 const { dialog } = require("electron").remote;
-//const configs = require("./config.js");
 
 var leftBlock = document.getElementById("left-block");
 var fileList = document.getElementById("file-list");
 var leftBottomBlock = document.getElementById("left-bottom-block");
-
-var classesHeader = document.getElementById("classes-header");
-var functionsHeader = document.getElementById("functions-header");
-var importsHeader = document.getElementById("imports-header");
 
 var classesList = document.getElementById("classes-list");
 var functionsList = document.getElementById("functions-list");
