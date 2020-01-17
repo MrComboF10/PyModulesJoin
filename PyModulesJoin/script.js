@@ -463,8 +463,6 @@ newFile.addEventListener("click", function () {
 
 createModule.addEventListener("click", function () {
 
-    //let content = "Test creating file!";
-
     var directory_path = dialog.showSaveDialogSync({
         filters: [{ name: "Python File", extensions: ["py"]}]
     });

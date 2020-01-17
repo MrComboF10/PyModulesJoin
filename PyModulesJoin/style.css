@@ -8,6 +8,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    /*border: 1px solid black;*/
 }
 
 #left-block {
@@ -16,19 +17,20 @@ html, body {
     float: left;
     height: 100%;
     width: 20%;
-    border: 1px solid black;
+    /*border-right: 1px solid black;*/
 }
 
 #file-list {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    border: 1px solid red;
+    border-top: 1px solid black;
+    /*border-left: 1px solid black;*/
 }
 
 #file-list li {
     width: 100%;
-    border: 1px solid pink;
+    /*border: 1px solid black;*/
     overflow: hidden;
     text-overflow: ellipsis;
     background-color: aqua;
@@ -40,12 +42,25 @@ html, body {
     width: 100%;
 }
 
-#file-handler {
-    border: 1px solid black;
+#delete-file {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+#new-file {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
 }
 
 #create-module {
-    border: 1px solid black;
+    border-top: 1px solid black;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
 }
 
 #right-block {
@@ -54,7 +69,8 @@ html, body {
     float: left;
     height: 100%;
     width: 80%;
-    border: 1px solid green;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
 }
 
 .checkbox {
