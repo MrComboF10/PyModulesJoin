@@ -108,3 +108,8 @@ html, body {
     display: inline-block;
     margin-right: 20px;
 }
+
+.python-object-list-header {
+    font-size: 2em;
+    margin: 10px;
+}
