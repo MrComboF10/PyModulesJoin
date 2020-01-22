@@ -16,6 +16,7 @@ html, body {
     float: left;
     height: 100%;
     width: 20%;
+    overflow: auto;
 }
 
 #file-list {
@@ -67,6 +68,8 @@ html, body {
     width: 80%;
     border-top: 1px solid black;
     border-left: 1px solid black;
+    overflow: auto;
+    resize: horizontal;
 }
 
 .checkbox {

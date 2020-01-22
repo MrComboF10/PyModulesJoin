@@ -268,6 +268,7 @@ function createPythonObjectLi(pythonObject) {
     divNodeObject.appendChild(divNodeObjectName);
     divNodeObject.appendChild(divNodeObjectCheckBox);
 
+    divNodeObject.name = pythonObject.name;
     divNodeObject.content = pythonObject.content;
 
     return divNodeObject;
@@ -472,18 +473,40 @@ function removePythonObjectsFileList(fileName) {
     importsCheckBoxList.removeChild(pythonObjectImportsCheckBox);
 }
 
-function getPythonObjectStringContent(pythonObjectsId) {
-    let content = "";
+function getSelectedPythonObject(pythonObjectsId) {
+    let pythonObjectsList = [];
     let pythonObjects = document.getElementById(pythonObjectsId);
     for (let pyobj of pythonObjects.childNodes) {
         for (let childsObj of pyobj.childNodes) {
             if (childsObj.className == "checkbox") {
-                if (childsObj.isSelected) content += pyobj.content;
+                if (childsObj.isSelected) pythonObjectsList.push(pyobj);
             }
         }
     }
+    return pythonObjectsList;
+}
+
+function getPythonObjectStringContent(pythonObjectsId) {
+    let content = "";
+    for (let pyobj of getSelectedPythonObject(pythonObjectsId)) {
+        content += pyobj.content;
+    }
     return content;
 }
+
+function getPythonObjectStringNameList(pythonObjectsId) {
+    let namesList = [];
+    for (let pyobj of getSelectedPythonObject(pythonObjectsId)) {
+        namesList.push(pyobj.name);
+    }
+    return namesList;
+}
+
+function existCheckedDuplicates(namesList) {
+    return (new Set(namesList)).size !== namesList.length;
+}
+
+
 
 window.addEventListener("resize", function () { setFileListHeight() });
 
@@ -539,6 +562,53 @@ newFile.addEventListener("click", function () {
 });
 
 createModule.addEventListener("click", function () {
+
+    // check duplicates
+    var classesNamesList = [];
+    var functionsNamesList = [];
+    var importsNamesList = [];
+
+    for (let li of fileList.childNodes) {
+        classesNamesList = classesNamesList.concat(getPythonObjectStringNameList("classes-" + li.fileName));
+        functionsNamesList = functionsNamesList.concat(getPythonObjectStringNameList("functions-" + li.fileName));
+        importsNamesList = importsNamesList.concat(getPythonObjectStringNameList("imports-" + li.fileName));
+
+    }
+
+    var existClassesDuplicates = existCheckedDuplicates(classesNamesList);
+    var existFunctionsDuplicates = existCheckedDuplicates(functionsNamesList);
+    var existImportsDuplicates = existCheckedDuplicates(importsNamesList);
+
+    if (existClassesDuplicates || existFunctionsDuplicates || existImportsDuplicates) {
+        let warningString = "There are multiple ";
+
+        if (existClassesDuplicates) {
+            warningString += "classes";
+        }
+
+        if (existFunctionsDuplicates) {
+            if (existClassesDuplicates) warningString += ", ";
+            warningString += "functions";
+        }
+
+        if (existImportsDuplicates) {
+            if (existFunctionsDuplicates || existClassesDuplicates) warningString += ", ";
+            warningString += "imports";
+        }
+
+        warningString += " with the same name selected. Do you want to continue?";
+
+        let buttonIndex = dialog.showMessageBoxSync({
+            type: "warning",
+            buttons: ["Yes", "No"],
+            defaultId: 0,
+            title: "File already exists!",
+            message: warningString
+        });
+
+        if (buttonIndex == 1) return;
+
+    }
 
     var directory_path = dialog.showSaveDialogSync({
         filters: [{ name: "Python File", extensions: ["py"]}]
