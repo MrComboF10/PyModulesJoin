@@ -1,7 +1,7 @@
 # PyModulesJoin
 Join python modules with PyModulesJoin application!
 
-## Create Window executable
+## Create Windows executable
 
 1. Install electron
 ```
